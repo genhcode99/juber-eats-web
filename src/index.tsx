@@ -1,6 +1,6 @@
 import App from "./App"
+import "./index.css"
 import React from "react"
-import "./styles/styles.css"
 import ReactDOM from "react-dom"
 import { client } from "./apollo"
 import reportWebVitals from "./reportWebVitals"
