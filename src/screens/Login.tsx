@@ -1,5 +1,18 @@
 import React from "react"
+import { gql, useMutation } from "@apollo/client"
 import { useForm } from "react-hook-form"
+import { FormError } from "../components/FormError"
+
+// <==========( GraphQl )==========>
+const LOGIN_MUTATION = gql`
+  mutation PotatoMutation($email: String!, $password: String!) {
+    login(input: { email: $email, password: $password }) {
+      ok
+      token
+      error
+    }
+  }
+`
 
 // <==========( 설정)==========>
 type LogInFormData = {
@@ -18,8 +31,11 @@ const Login = () => {
     formState: { errors },
   } = useForm<LogInFormData>()
 
+  const [loginMutation, { loading, error, data }] = useMutation(LOGIN_MUTATION)
+
   const onSubmit = () => {
-    console.log(getValues())
+    const { email, password } = getValues()
+    loginMutation({ variables: { email, password } })
   }
 
   //<==========( 화면출력 )==========>
@@ -39,10 +55,9 @@ const Login = () => {
             {...register("email", { required: "Email Is Required" })}
           />
           {errors.email?.message && (
-            <span className="font-medium text-red-500">
-              {errors.email?.message}
-            </span>
+            <FormError errorMessage={errors.email?.message} />
           )}
+
           <input
             required
             type="password"
@@ -57,9 +72,7 @@ const Login = () => {
             })}
           />
           {errors.password?.message && (
-            <span className="font-medium text-red-500">
-              {errors.password?.message}
-            </span>
+            <FormError errorMessage={errors.password?.message} />
           )}
           <button className="btn mt-3">Log In</button>
         </form>
