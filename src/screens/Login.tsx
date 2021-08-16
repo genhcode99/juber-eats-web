@@ -10,6 +10,7 @@ import {
 import juberLogo from "../images/Logo.svg"
 import Button from "../components/Button"
 import { Link } from "react-router-dom"
+import { isLoggedInVar } from "../apollo"
 
 // <==========( GraphQl )==========>
 const LOGIN_MUTATION = gql`
@@ -42,10 +43,11 @@ const Login = () => {
 
   const onCompleted = (data: loginMutation) => {
     const {
-      login: { error, ok, token },
+      login: { ok, token },
     } = data
     if (ok) {
       console.log(token)
+      isLoggedInVar(true)
     }
   }
 
@@ -81,7 +83,14 @@ const Login = () => {
             type="email"
             placeholder="Email"
             className="input"
-            {...register("email", { required: "Email Is Required" })}
+            {...register("email", {
+              required: "Email Is Required",
+              pattern: {
+                value:
+                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: "The email format is not valid.",
+              },
+            })}
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />

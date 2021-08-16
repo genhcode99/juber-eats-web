@@ -9,8 +9,12 @@ import {
 } from "../graphql_type/loginMutation"
 import juberLogo from "../images/Logo.svg"
 import Button from "../components/Button"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import { UserRole } from "../graphql_type/globalTypes"
+import {
+  createAccountMutation,
+  createAccountMutationVariables,
+} from "../graphql_type/createAccountMutation"
 
 // <==========( GraphQl )==========>
 const CREATE_ACCOUNT_MUTATION = gql`
@@ -34,7 +38,6 @@ const CreateAccount = () => {
   // <==========( 기능 )==========>
   // *. 회원가입
   const {
-    watch,
     register,
     formState,
     getValues,
@@ -45,9 +48,33 @@ const CreateAccount = () => {
     defaultValues: { role: UserRole.Client },
   })
 
-  const [createAccountMutation] = useMutation(CREATE_ACCOUNT_MUTATION)
+  const history = useHistory()
 
-  const onSubmit = () => {}
+  const onCompleted = (data: createAccountMutation) => {
+    const {
+      createAccount: { ok, error },
+    } = data
+    if (ok) {
+      history.push("/")
+    }
+  }
+
+  const [
+    createAccountMutation,
+    { loading, data: createAccountMutationResult },
+  ] = useMutation<createAccountMutation, createAccountMutationVariables>(
+    CREATE_ACCOUNT_MUTATION,
+    { onCompleted },
+  )
+
+  const onSubmit = () => {
+    if (!loading) {
+      const { email, password, role } = getValues()
+      createAccountMutation({
+        variables: { createAccountInput: { email, password, role } },
+      })
+    }
+  }
 
   //<==========( 화면출력 )==========>
   return (
@@ -69,7 +96,14 @@ const CreateAccount = () => {
             type="email"
             placeholder="Email"
             className="input"
-            {...register("email", { required: "Email Is Required" })}
+            {...register("email", {
+              required: "Email Is Required",
+              pattern: {
+                value:
+                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: "The email format is not valid.",
+              },
+            })}
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />
@@ -105,9 +139,14 @@ const CreateAccount = () => {
 
           <Button
             canClick={formState.isValid}
-            loading={false}
+            loading={loading}
             actionText="Create Account"
           />
+          {createAccountMutationResult?.createAccount.error && (
+            <FormError
+              errorMessage={createAccountMutationResult?.createAccount.error}
+            />
+          )}
         </form>
         <div>
           Already have an account?{" "}
