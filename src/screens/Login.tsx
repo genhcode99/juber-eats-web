@@ -10,7 +10,7 @@ import {
 import juberLogo from "../images/Logo.svg"
 import Button from "../components/Button"
 import { Link } from "react-router-dom"
-import { authToken, isLoggedInVar } from "../apollo"
+import { authTokenVar, isLoggedInVar } from "../apollo"
 import { LOCALSTORAGE_TOKEN } from "../constants"
 
 // <==========( GraphQl )==========>
@@ -48,7 +48,7 @@ const Login = () => {
     } = data
     if (ok && token) {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token)
-      authToken(token)
+      authTokenVar(token)
       isLoggedInVar(true)
     }
   }
