@@ -1,7 +1,20 @@
 import React from "react"
-import { isLoggedInVar } from "../apollo"
 import { gql, useQuery } from "@apollo/client"
 import { meQuery } from "../graphql_type/meQuery"
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom"
+import Restaurants from "../screens/client/Restaurants"
+
+// <==========( Route )==========>
+const ClientRoutes = [
+  <Route exact path="/">
+    <Restaurants />
+  </Route>,
+]
 
 // <==========( Graphql )==========>
 const ME_QUERY = gql`
@@ -14,11 +27,14 @@ const ME_QUERY = gql`
     }
   }
 `
+// <==========( 설정 )==========>
 
+// <==========( 컴포넌트 )==========>
 export const LoggedInRouter = () => {
+  // <==========( 기능 )==========>
   const { data, loading, error } = useQuery<meQuery>(ME_QUERY)
 
-  // <==========( Loading 화면 출력)==========>
+  // <==========( Loading 화면 출력 )==========>
   if (!data || loading || error) {
     return (
       <div className="h-screen flex justify-center items-center">
@@ -27,8 +43,9 @@ export const LoggedInRouter = () => {
     )
   }
   return (
-    <div>
-      <h1>{data.me.email}</h1>
-    </div>
+    <Router>
+      <Switch>{data.me.role === "Client" && ClientRoutes}</Switch>
+      <Redirect to="/" />
+    </Router>
   )
 }
