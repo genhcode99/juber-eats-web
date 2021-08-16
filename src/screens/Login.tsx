@@ -1,5 +1,5 @@
 import React from "react"
-import { ApolloError, gql, useMutation } from "@apollo/client"
+import { gql, useMutation } from "@apollo/client"
 import { useForm } from "react-hook-form"
 import { FormError } from "../components/FormError"
 import {
@@ -44,14 +44,16 @@ const Login = () => {
     }
   }
 
-  const [loginMutation, { data: loginMutationResult }] = useMutation<
+  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
     loginMutation,
     loginMutationVariables
   >(LOGIN_MUTATION, { onCompleted })
 
   const onSubmit = () => {
-    const { email, password } = getValues()
-    loginMutation({ variables: { loginInput: { email, password } } })
+    if (!loading) {
+      const { email, password } = getValues()
+      loginMutation({ variables: { loginInput: { email, password } } })
+    }
   }
 
   //<==========( 화면출력 )==========>
@@ -90,7 +92,9 @@ const Login = () => {
           {errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}
-          <button className="btn mt-3">Log In</button>
+          <button className="btn mt-3" disabled={loading}>
+            {loading ? "Loading" : "Log In"}
+          </button>
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult?.login.error} />
           )}

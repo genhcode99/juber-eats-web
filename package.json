@@ -22,10 +22,10 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "craco start",
+    "start": "npm run apollo:codegen && craco start",
     "build": "craco build",
     "test": "craco test",
-    "apollo:codegen": "npx apollo client:codegen src/graphql_type --target=typescript --outputFlat",
+    "apollo:codegen": "rm -rf src/graphql_type && npx apollo client:codegen src/graphql_type --target=typescript --outputFlat",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
