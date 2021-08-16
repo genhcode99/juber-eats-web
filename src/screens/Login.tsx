@@ -7,6 +7,8 @@ import {
   loginMutationVariables,
 } from "../graphql_type/loginMutation"
 import juberLogo from "../images/Logo.svg"
+import Button from "../components/Button"
+import { Link } from "react-router-dom"
 
 // <==========( GraphQl )==========>
 const LOGIN_MUTATION = gql`
@@ -31,10 +33,11 @@ const Login = () => {
   // *. 로그인
   const {
     register,
+    formState,
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm<LogInFormData>()
+  } = useForm<LogInFormData>({ mode: "onChange" })
 
   const onCompleted = (data: loginMutation) => {
     const {
@@ -67,7 +70,7 @@ const Login = () => {
         </h4>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-3 mt-5 w-full"
+          className="grid gap-3 mt-5 w-full mb-5"
         >
           <input
             required
@@ -95,13 +98,21 @@ const Login = () => {
           {errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}
-          <button className="btn" disabled={loading}>
-            {loading ? "Loading" : "Log In"}
-          </button>
+          <Button
+            canClick={formState.isValid}
+            loading={loading}
+            actionText="Log in"
+          />
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult?.login.error} />
           )}
         </form>
+        <div>
+          New to Juber?{" "}
+          <Link to="/create-account" className="text-lime-600 hover:underline">
+            Create an Account
+          </Link>
+        </div>
       </div>
     </div>
   )
