@@ -12,7 +12,6 @@
     "@types/node": "^12.20.19",
     "@types/react": "^17.0.17",
     "@types/react-dom": "^17.0.9",
-    "apollo": "^2.33.6",
     "graphql": "^15.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -26,6 +25,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "apollo:codegen": "npx apollo client:codegen src/graphql_type --target=typescript --outputFlat",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.8",
+    "apollo": "^2.33.6",
     "autoprefixer": "^9.8.6",
     "postcss": "^7.0.36",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7"
