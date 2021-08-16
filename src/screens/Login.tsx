@@ -1,5 +1,5 @@
 import React from "react"
-import Helmet from "react-helmet"
+import { Helmet } from "react-helmet-async"
 import { gql, useMutation } from "@apollo/client"
 import { useForm } from "react-hook-form"
 import { FormError } from "../components/FormError"
@@ -10,7 +10,8 @@ import {
 import juberLogo from "../images/Logo.svg"
 import Button from "../components/Button"
 import { Link } from "react-router-dom"
-import { isLoggedInVar } from "../apollo"
+import { authToken, isLoggedInVar } from "../apollo"
+import { LOCALSTORAGE_TOKEN } from "../constants"
 
 // <==========( GraphQl )==========>
 const LOGIN_MUTATION = gql`
@@ -45,8 +46,9 @@ const Login = () => {
     const {
       login: { ok, token },
     } = data
-    if (ok) {
-      console.log(token)
+    if (ok && token) {
+      localStorage.setItem(LOCALSTORAGE_TOKEN, token)
+      authToken(token)
       isLoggedInVar(true)
     }
   }
@@ -70,7 +72,7 @@ const Login = () => {
         <title>Login | Juber Eats</title>
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-        <img src={juberLogo} className="w-52 mb-10" />
+        <img src={juberLogo} alt="Juber Eats" className="w-52 mb-10" />
         <h4 className="w-full text-left text-3xl mb-5 font-medium">
           Welcome back
         </h4>

@@ -1,12 +1,8 @@
 import React from "react"
-import Helmet from "react-helmet"
+import { Helmet } from "react-helmet-async"
 import { gql, useMutation } from "@apollo/client"
 import { useForm } from "react-hook-form"
 import { FormError } from "../components/FormError"
-import {
-  loginMutation,
-  loginMutationVariables,
-} from "../graphql_type/loginMutation"
 import juberLogo from "../images/Logo.svg"
 import Button from "../components/Button"
 import { Link, useHistory } from "react-router-dom"
@@ -52,9 +48,10 @@ const CreateAccount = () => {
 
   const onCompleted = (data: createAccountMutation) => {
     const {
-      createAccount: { ok, error },
+      createAccount: { ok },
     } = data
     if (ok) {
+      alert("Account Created! Log in now!")
       history.push("/")
     }
   }
@@ -83,7 +80,7 @@ const CreateAccount = () => {
         <title>Create Account | Juber Eats</title>
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-        <img src={juberLogo} className="w-52 mb-10" />
+        <img src={juberLogo} alt="Juber Eats" className="w-52 mb-10" />
         <h4 className="w-full text-left text-3xl mb-5 font-medium">
           Let's get started
         </h4>
