@@ -1,4 +1,5 @@
 import React from "react"
+import Helmet from "react-helmet"
 import { gql, useMutation } from "@apollo/client"
 import { useForm } from "react-hook-form"
 import { FormError } from "../components/FormError"
@@ -63,6 +64,9 @@ const Login = () => {
   //<==========( 화면출력 )==========>
   return (
     <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+      <Helmet>
+        <title>Login | Juber Eats</title>
+      </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
         <img src={juberLogo} className="w-52 mb-10" />
         <h4 className="w-full text-left text-3xl mb-5 font-medium">
