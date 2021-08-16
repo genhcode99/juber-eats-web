@@ -6,6 +6,7 @@ import {
   loginMutation,
   loginMutationVariables,
 } from "../graphql_type/loginMutation"
+import juberLogo from "../images/Logo.svg"
 
 // <==========( GraphQl )==========>
 const LOGIN_MUTATION = gql`
@@ -58,24 +59,26 @@ const Login = () => {
 
   //<==========( 화면출력 )==========>
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-800">
-      <div className="bg-white w-full max-w-lg pt-10 pb-7 rounded-md text-center">
-        <h3 className="text-3xl text-gray-800">Log In</h3>
+    <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+      <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
+        <img src={juberLogo} className="w-52 mb-10" />
+        <h4 className="w-full text-left text-3xl mb-5 font-medium">
+          Welcome back
+        </h4>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-3 mt-5 px-5"
+          className="grid gap-3 mt-5 w-full"
         >
           <input
             required
             type="email"
             placeholder="Email"
-            className="mb-3 input"
+            className="input"
             {...register("email", { required: "Email Is Required" })}
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />
           )}
-
           <input
             required
             type="password"
@@ -92,7 +95,7 @@ const Login = () => {
           {errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}
-          <button className="btn mt-3" disabled={loading}>
+          <button className="btn" disabled={loading}>
             {loading ? "Loading" : "Log In"}
           </button>
           {loginMutationResult?.login.error && (
