@@ -49,7 +49,6 @@ const CreateAccount = () => {
 
   const onSubmit = () => {}
 
-  console.log(watch())
   //<==========( 화면출력 )==========>
   return (
     <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
