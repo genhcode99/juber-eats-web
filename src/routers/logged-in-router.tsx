@@ -1,14 +1,13 @@
 import React from "react"
-import { gql, useQuery } from "@apollo/client"
-import { meQuery } from "../graphql_type/meQuery"
 import {
   BrowserRouter as Router,
   Redirect,
   Route,
   Switch,
 } from "react-router-dom"
-import Restaurants from "../screens/client/Restaurants"
+import { useMe } from "../hooks/useMe"
 import Header from "../components/Header"
+import Restaurants from "../screens/client/Restaurants"
 
 // <==========( Route )==========>
 const ClientRoutes = [
@@ -17,23 +16,10 @@ const ClientRoutes = [
   </Route>,
 ]
 
-// <==========( Graphql )==========>
-const ME_QUERY = gql`
-  query meQuery {
-    me {
-      id
-      email
-      role
-      verified
-    }
-  }
-`
-// <==========( 설정 )==========>
-
 // <==========( 컴포넌트 )==========>
 export const LoggedInRouter = () => {
   // <==========( 기능 )==========>
-  const { data, loading, error } = useQuery<meQuery>(ME_QUERY)
+  const { data, loading, error } = useMe()
 
   // <==========( Loading 화면 출력 )==========>
   if (!data || loading || error) {
