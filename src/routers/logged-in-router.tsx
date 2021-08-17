@@ -8,6 +8,7 @@ import {
   Switch,
 } from "react-router-dom"
 import Restaurants from "../screens/client/Restaurants"
+import Header from "../components/Header"
 
 // <==========( Route )==========>
 const ClientRoutes = [
@@ -44,8 +45,11 @@ export const LoggedInRouter = () => {
   }
   return (
     <Router>
-      <Switch>{data.me.role === "Client" && ClientRoutes}</Switch>
-      <Redirect to="/" />
+      <Header />
+      <Switch>
+        {data.me.role === "Client" && ClientRoutes}
+        <Redirect to="/" />
+      </Switch>
     </Router>
   )
 }
