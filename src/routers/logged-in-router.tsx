@@ -13,10 +13,10 @@ import { ConfirmEmail } from "../screens/user/ConfirmEmail"
 
 // <==========( Route )==========>
 const ClientRoutes = [
-  <Route exact path="/">
+  <Route key={1} exact path="/">
     <Restaurants />
   </Route>,
-  <Route exact path="/confirm">
+  <Route key={2} exact path="/confirm">
     <ConfirmEmail />
   </Route>,
 ]
