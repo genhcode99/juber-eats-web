@@ -8,6 +8,7 @@ import {
   editProfileVariables,
 } from "../../graphql_type/editProfile"
 import { FormError } from "../../components/FormError"
+import { Helmet } from "react-helmet-async"
 
 // <==========( Graphql )==========>
 const EDIT_PROFILE_MUTATION = gql`
@@ -91,6 +92,9 @@ export const EditProfile = () => {
   // <==========( Presenter )==========>
   return (
     <div className="mt-52 flex flex-col justify-center items-center">
+      <Helmet>
+        <title>Edit Profile | Juber Eats</title>
+      </Helmet>
       <h4 className="font-semibold text-2xl mb-3">Edit Profile</h4>
       <form
         className="grid gap-3 mt-5 w-full max-w-screen-sm mb-5"
