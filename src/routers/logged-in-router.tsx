@@ -10,6 +10,7 @@ import Header from "../components/Header"
 import Restaurants from "../screens/client/Restaurants"
 import NotFound from "../screens/404"
 import { ConfirmEmail } from "../screens/user/ConfirmEmail"
+import { EditProfile } from "../screens/user/EditProfile"
 
 // <==========( Route )==========>
 const ClientRoutes = [
@@ -18,6 +19,9 @@ const ClientRoutes = [
   </Route>,
   <Route key={2} exact path="/confirm">
     <ConfirmEmail />
+  </Route>,
+  <Route key={3} exact path="/edit-profile">
+    <EditProfile />
   </Route>,
 ]
 
