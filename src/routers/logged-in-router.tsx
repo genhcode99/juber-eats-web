@@ -1,10 +1,5 @@
 import React from "react"
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { useMe } from "../hooks/useMe"
 import Header from "../components/Header"
 import Restaurants from "../screens/client/Restaurants"

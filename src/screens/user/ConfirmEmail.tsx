@@ -4,7 +4,7 @@ import {
   verifyEmail,
   verifyEmailVariables,
 } from "../../graphql_type/verifyEmail"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { useMe } from "../../hooks/useMe"
 
 // <==========( Graphql )==========>
@@ -21,6 +21,7 @@ const VERIFY_EMAIL_MUTATION = gql`
 
 export const ConfirmEmail = () => {
   // <==========( Features )==========>
+  // useQuery 에서는 refetch 를 사용할 수 있다.
   const { data: userData } = useMe()
   const client = useApolloClient()
   const history = useHistory()

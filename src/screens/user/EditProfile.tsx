@@ -1,5 +1,5 @@
 import React from "react"
-import { gql, useMutation } from "@apollo/client"
+import { gql, useApolloClient, useMutation } from "@apollo/client"
 import { useMe } from "../../hooks/useMe"
 import { useForm } from "react-hook-form"
 import Button from "../../components/Button"
@@ -28,19 +28,7 @@ type IFormData = {
 // <==========( Feature )==========>
 export const EditProfile = () => {
   const { data: userData } = useMe()
-
-  const onCompleted = (data: editProfile) => {
-    const {
-      editProfile: { ok },
-    } = data
-    if (ok) {
-    }
-  }
-
-  const [editProfileMutation, { loading }] = useMutation<
-    editProfile,
-    editProfileVariables
-  >(EDIT_PROFILE_MUTATION, { onCompleted })
+  const client = useApolloClient()
 
   const {
     register,
@@ -54,6 +42,39 @@ export const EditProfile = () => {
       email: userData?.me.email,
     },
   })
+
+  const onCompleted = (data: editProfile) => {
+    const {
+      editProfile: { ok },
+    } = data
+    if (ok && userData) {
+      const {
+        me: { email: prevEmail, id },
+      } = userData
+      const { email: newEmail } = getValues()
+
+      if (prevEmail !== newEmail) {
+        client.writeFragment({
+          id: `User:${id}`,
+          fragment: gql`
+            fragment EditedUser on User {
+              email
+              verified
+            }
+          `,
+          data: {
+            email: newEmail,
+            verified: false,
+          },
+        })
+      }
+    }
+  }
+
+  const [editProfileMutation, { loading }] = useMutation<
+    editProfile,
+    editProfileVariables
+  >(EDIT_PROFILE_MUTATION, { onCompleted })
 
   const onSubmit = () => {
     const { email, password } = getValues()
