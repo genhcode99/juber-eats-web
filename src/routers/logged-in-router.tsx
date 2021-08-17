@@ -8,11 +8,16 @@ import {
 import { useMe } from "../hooks/useMe"
 import Header from "../components/Header"
 import Restaurants from "../screens/client/Restaurants"
+import NotFound from "../screens/404"
+import { ConfirmEmail } from "../screens/user/ConfirmEmail"
 
 // <==========( Route )==========>
 const ClientRoutes = [
   <Route exact path="/">
     <Restaurants />
+  </Route>,
+  <Route exact path="/confirm">
+    <ConfirmEmail />
   </Route>,
 ]
 
@@ -34,7 +39,9 @@ export const LoggedInRouter = () => {
       <Header />
       <Switch>
         {data.me.role === "Client" && ClientRoutes}
-        <Redirect to="/" />
+        <Route>
+          <NotFound />
+        </Route>
       </Switch>
     </Router>
   )
