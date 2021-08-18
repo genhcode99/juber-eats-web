@@ -32,7 +32,23 @@ export const Restaurant = () => {
     { variables: { input: { restaurantId: +id } } },
   )
 
-  console.log(data)
+  const restaurant = data?.restaurant.restaurant
+
   // <==========( Presenter )==========>
-  return <div>Restaurant</div>
+  return (
+    <div>
+      <div
+        className="bg-gray-800 py-48 bg-cover bg-center"
+        style={{ backgroundImage: `url(${restaurant?.coverImg})` }}
+      >
+        <div className="bg-white w-1/4 py-8 pl-48">
+          <h4 className="text-4xl mb-4">{restaurant?.name}</h4>
+          <h5 className="text-sm font-light mb-2">
+            {restaurant?.category?.name}
+          </h5>
+          <h6 className="text-sm font-light">{restaurant?.address}</h6>
+        </div>
+      </div>
+    </div>
+  )
 }
