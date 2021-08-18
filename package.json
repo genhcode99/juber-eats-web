@@ -29,7 +29,7 @@
   "scripts": {
     "start": "npm run apollo:codegen && craco start",
     "build": "craco build",
-    "test": "craco test",
+    "test": "craco test --verbose",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "apollo:codegen": "rm -rf src/graphql_type && npx apollo client:codegen src/graphql_type --target=typescript --outputFlat",
     "eject": "react-scripts eject"
