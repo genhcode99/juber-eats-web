@@ -38,6 +38,10 @@ export interface LoginInput {
   password: string;
 }
 
+export interface RestaurantInput {
+  restaurantId: number;
+}
+
 export interface SearchRestaurantsInput {
   page?: number | null;
   query: string;

@@ -8,6 +8,7 @@ import { ConfirmEmail } from "../screens/user/ConfirmEmail"
 import { EditProfile } from "../screens/user/EditProfile"
 import { Search } from "../screens/client/Search"
 import { Category } from "../screens/client/Category"
+import { Restaurant } from "../screens/client/Restaurant"
 
 // <==========( Route )==========>
 const ClientRoutes = [
@@ -25,6 +26,9 @@ const ClientRoutes = [
   </Route>,
   <Route key={5} path="/category/:slug">
     <Category />
+  </Route>,
+  <Route key={6} path="/restaurants/:id">
+    <Restaurant />
   </Route>,
 ]
 
