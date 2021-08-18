@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client"
 import { url } from "inspector"
-import React from "react"
+import React, { useState } from "react"
+import { Restaurant } from "../../components/Restaurant"
 import {
   restaurantsPageQuery,
   restaurantsPageQueryVariables,
@@ -39,16 +40,23 @@ const RESTAURANT_QUERY = gql`
   }
 `
 
+// <==========( Featuer )==========>
 export const Restaurants = () => {
+  const [page, setPage] = useState(1)
+
   const { data, loading, error } = useQuery<
     restaurantsPageQuery,
     restaurantsPageQueryVariables
   >(RESTAURANT_QUERY, {
     variables: {
-      input: { page: 1 },
+      input: { page },
     },
   })
-  console.log(data)
+
+  const onClickNext = () => setPage((current) => current + 1)
+  const onClickPrev = () => setPage((current) => current - 1)
+
+  // <==========( Presenter )==========>
   return (
     <div>
       <form className="w-full bg-gray-800 py-40 flex items-center justify-center">
@@ -60,7 +68,7 @@ export const Restaurants = () => {
       </form>
       <div>
         {!loading && (
-          <div className="max-w-screen-2xl mx-auto mt-8 px-5">
+          <div className="max-w-screen-2xl mx-auto mt-8 px-5 pb-20">
             <div className=" max-w-md mx-auto flex justify-around">
               {data?.allCategories.categories?.map((category) => (
                 <div className="flex flex-col items-center cursor-pointer group">
@@ -74,19 +82,40 @@ export const Restaurants = () => {
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-10">
+            <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-16">
               {data?.allRestaurants.results?.map((restaurant) => (
-                <div>
-                  <div
-                    className="bg-red-500 py-28 bg-cover bg-center mb-3"
-                    style={{ backgroundImage: `url(${restaurant.coverImg})` }}
-                  ></div>
-                  <h3 className="text-xl font-medium">{restaurant.name}</h3>
-                  <span className="border-t-2 border-gray-200">
-                    {restaurant.category?.name}
-                  </span>
-                </div>
+                <Restaurant
+                  id={restaurant.id + ""}
+                  coverImg={`url(${restaurant.coverImg})`}
+                  name={restaurant.name}
+                  categoryName={restaurant.category?.name}
+                />
               ))}
+            </div>
+            <div className="grid grid-cols-3 items-center max-w-md mx-auto mt-10">
+              {page > 1 ? (
+                <button
+                  onClick={onClickPrev}
+                  className="font-medium text-2xl focus-within:outline-none"
+                >
+                  &larr;
+                </button>
+              ) : (
+                <div></div>
+              )}
+              <span>
+                Page {page} of {data?.allRestaurants.totalPages}
+              </span>
+              {page !== data?.allRestaurants.totalPages ? (
+                <button
+                  onClick={onClickNext}
+                  className="font-medium text-2xl focus-within:outline-none"
+                >
+                  &rarr;
+                </button>
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         )}
