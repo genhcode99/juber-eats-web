@@ -1,15 +1,15 @@
-import { gql, useQuery } from "@apollo/client"
 import React, { useState } from "react"
-import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
-import { useHistory } from "react-router-dom"
-import { FormError } from "../../components/FormError"
-import { Restaurant } from "../../components/Restaurant"
-import { RESTAURANT_FRAGMENT } from "../../fragments"
+import { Helmet } from "react-helmet-async"
+import { gql, useQuery } from "@apollo/client"
 import {
   restaurantsPageQuery,
   restaurantsPageQueryVariables,
 } from "../../graphql_type/restaurantsPageQuery"
+import { Link, useHistory } from "react-router-dom"
+import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments"
+import { FormError } from "../../components/FormError"
+import { Restaurant } from "../../components/Restaurant"
 
 // <==========( GraphQl )==========>
 const RESTAURANT_QUERY = gql`
@@ -18,11 +18,7 @@ const RESTAURANT_QUERY = gql`
       ok
       error
       categories {
-        id
-        name
-        coverImg
-        slug
-        restaurantCount
+        ...CategoryParts
       }
     }
     allRestaurants(input: $input) {
@@ -36,6 +32,7 @@ const RESTAURANT_QUERY = gql`
     }
   }
   ${RESTAURANT_FRAGMENT}
+  ${CATEGORY_FRAGMENT}
 `
 // <==========( Settings )==========>
 interface ISearchData {
@@ -109,18 +106,17 @@ export const Restaurants = () => {
           <div className="max-w-screen-2xl mx-auto mt-8 px-5 pb-20">
             <div className=" max-w-md mx-auto flex justify-around">
               {data?.allCategories.categories?.map((category) => (
-                <div
-                  key={category.id}
-                  className="flex flex-col items-center cursor-pointer group"
-                >
-                  <div
-                    className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-200 "
-                    style={{ backgroundImage: `url(${category.coverImg})` }}
-                  ></div>
-                  <span className="text-sm text-center font-medium mt-1">
-                    {category.name}
-                  </span>
-                </div>
+                <Link to={`/category/${category.slug}`} key={category.id}>
+                  <div className="flex flex-col items-center cursor-pointer group">
+                    <div
+                      className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-200 "
+                      style={{ backgroundImage: `url(${category.coverImg})` }}
+                    ></div>
+                    <span className="text-sm text-center font-medium mt-1">
+                      {category.name}
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
 

@@ -7,6 +7,7 @@ import NotFound from "../screens/404"
 import { ConfirmEmail } from "../screens/user/ConfirmEmail"
 import { EditProfile } from "../screens/user/EditProfile"
 import { Search } from "../screens/client/Search"
+import { Category } from "../screens/client/Category"
 
 // <==========( Route )==========>
 const ClientRoutes = [
@@ -21,6 +22,9 @@ const ClientRoutes = [
   </Route>,
   <Route key={4} path="/search">
     <Search />
+  </Route>,
+  <Route key={5} path="/category/:slug">
+    <Category />
   </Route>,
 ]
 

@@ -46,6 +46,7 @@ export const Search = () => {
     })
   }, [history, location.search])
   console.log(loading, data, called)
+
   // <==========( Presenter )==========>
   return (
     <div>
