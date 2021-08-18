@@ -1,4 +1,4 @@
-import App from "./App"
+import { App } from "./components/app"
 import "./index.css"
 import React from "react"
 import ReactDOM from "react-dom"

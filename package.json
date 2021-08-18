@@ -30,6 +30,7 @@
     "start": "npm run apollo:codegen && craco start",
     "build": "craco build",
     "test": "craco test",
+    "test:cov": "npm test -- --coverage --watchAll=false",
     "apollo:codegen": "rm -rf src/graphql_type && npx apollo client:codegen src/graphql_type --target=typescript --outputFlat",
     "eject": "react-scripts eject"
   },
@@ -58,5 +59,12 @@
     "autoprefixer": "^9.8.6",
     "postcss": "^7.0.36",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "./src/components/**/*.tsx",
+      "./src/screens/**/*.tsx",
+      "./src/routers/**/*.tsx"
+    ]
   }
 }
