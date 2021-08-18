@@ -6,17 +6,21 @@ import { Restaurants } from "../screens/client/Restaurants"
 import NotFound from "../screens/404"
 import { ConfirmEmail } from "../screens/user/ConfirmEmail"
 import { EditProfile } from "../screens/user/EditProfile"
+import { Search } from "../screens/client/Search"
 
 // <==========( Route )==========>
 const ClientRoutes = [
   <Route key={1} exact path="/">
     <Restaurants />
   </Route>,
-  <Route key={2} exact path="/confirm">
+  <Route key={2} path="/confirm">
     <ConfirmEmail />
   </Route>,
-  <Route key={3} exact path="/edit-profile">
+  <Route key={3} path="/edit-profile">
     <EditProfile />
+  </Route>,
+  <Route key={4} path="/search">
+    <Search />
   </Route>,
 ]
 
