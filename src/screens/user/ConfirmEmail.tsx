@@ -55,7 +55,7 @@ export const ConfirmEmail = () => {
   useEffect(() => {
     const [_, code] = window.location.href.split("code=")
     verifyEmailMutation({ variables: { input: { code } } })
-  }, [])
+  }, [verifyEmailMutation])
 
   // <==========( Presenter )==========>
   return (

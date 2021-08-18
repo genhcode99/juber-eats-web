@@ -1,9 +1,11 @@
 import { gql, useQuery } from "@apollo/client"
 import React, { useState } from "react"
+import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
 import { useHistory } from "react-router-dom"
 import { FormError } from "../../components/FormError"
 import { Restaurant } from "../../components/Restaurant"
+import { RESTAURANT_FRAGMENT } from "../../fragments"
 import {
   restaurantsPageQuery,
   restaurantsPageQueryVariables,
@@ -29,17 +31,11 @@ const RESTAURANT_QUERY = gql`
       totalPages
       totalResults
       results {
-        id
-        name
-        coverImg
-        category {
-          name
-        }
-        address
-        isPromoted
+        ...RestaurantParts
       }
     }
   }
+  ${RESTAURANT_FRAGMENT}
 `
 // <==========( Settings )==========>
 interface ISearchData {
@@ -85,6 +81,9 @@ export const Restaurants = () => {
   // <==========( Presenter )==========>
   return (
     <div>
+      <Helmet>
+        <title>Home | Juber Eats</title>
+      </Helmet>
       <form
         onSubmit={handleSubmit(onSearchSubmit)}
         className="w-full bg-gray-800 py-40 flex flex-col items-center justify-center"
