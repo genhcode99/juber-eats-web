@@ -5,8 +5,12 @@ import { Link } from "react-router-dom"
 import { useMe } from "../hooks/useMe"
 import juberLogo from "../images/Logo.svg"
 
+// <==========( Feature )==========>
 const Header: React.FC = () => {
   const { data } = useMe()
+  console.log(data)
+
+  // <==========( Presenter )==========>
   return (
     <>
       {!data?.me.verified && (
