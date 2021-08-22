@@ -5,11 +5,9 @@ import { render, waitFor } from "@testing-library/react"
 import { MockedProvider } from "@apollo/client/testing"
 import { BrowserRouter as Router } from "react-router-dom"
 
-// <==========( Mock )==========>
-
-// <==========( Test )==========>
+// waitFor() 관련 이슈
 describe("<Header />", () => {
-  it("renders verify banner", async () => {
+  it("renders OK", async () => {
     await waitFor(async () => {
       const { debug } = render(
         <MockedProvider
@@ -37,7 +35,6 @@ describe("<Header />", () => {
         </MockedProvider>,
       )
       await new Promise((resolve) => setTimeout(resolve, 0))
-      debug()
     })
   })
 })

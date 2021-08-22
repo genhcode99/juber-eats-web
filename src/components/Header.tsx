@@ -9,7 +9,6 @@ import juberLogo from "../images/Logo.svg"
 const Header: React.FC = () => {
   const { data } = useMe()
   console.log(data)
-
   // <==========( Presenter )==========>
   return (
     <>
