@@ -31,6 +31,7 @@
     "build": "craco build",
     "test": "craco test --verbose",
     "test:cov": "npm test -- --coverage --watchAll=false",
+    "cypress": "npx cypress open",
     "apollo:codegen": "rm -rf src/graphql_type && npx apollo client:codegen src/graphql_type --target=typescript --outputFlat",
     "eject": "react-scripts eject"
   },
