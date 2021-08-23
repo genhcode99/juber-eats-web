@@ -1,9 +1,8 @@
 import React from "react"
 import Header from "../Header"
 import { ME_QUERY } from "../../hooks/useMe"
-import { render, waitFor } from "@testing-library/react"
+import { render, waitFor } from "../../test-utils"
 import { MockedProvider } from "@apollo/client/testing"
-import { BrowserRouter as Router } from "react-router-dom"
 
 // waitFor() 관련 이슈
 describe("<Header />", () => {
@@ -29,9 +28,7 @@ describe("<Header />", () => {
             },
           ]}
         >
-          <Router>
-            <Header />
-          </Router>
+          <Header />
         </MockedProvider>,
       )
       await new Promise((resolve) => setTimeout(resolve, 0))

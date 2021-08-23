@@ -1,7 +1,6 @@
 import React from "react"
 import { Restaurant } from "../Restaurant"
-import { render } from "@testing-library/react"
-import { BrowserRouter as Router } from "react-router-dom"
+import { render } from "../../test-utils"
 
 describe("<Restaurant />", () => {
   it("renders OK with props", () => {
@@ -11,11 +10,7 @@ describe("<Restaurant />", () => {
       name: "nameTest",
       categoryName: "catName",
     }
-    const { getByText, container } = render(
-      <Router>
-        <Restaurant {...restaurantProps} />
-      </Router>,
-    )
+    const { getByText, container } = render(<Restaurant {...restaurantProps} />)
     getByText(restaurantProps.name)
     getByText(restaurantProps.categoryName)
     expect(container.firstChild).toHaveAttribute(
