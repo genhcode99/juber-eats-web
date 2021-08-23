@@ -6,6 +6,21 @@ import { render, waitFor, RenderResult } from "../../test-utils"
 import { createMockClient, MockApolloClient } from "mock-apollo-client"
 import { UserRole } from "../../graphql_type/globalTypes"
 
+const mockPush = jest.fn()
+
+jest.mock("react-router-dom", () => {
+  // react-router-dom의 실제기능을 가지고 와서 useHistory 만을 mocking 함
+  const realModule = jest.requireActual("react-router-dom")
+  return {
+    ...realModule,
+    useHistory: () => {
+      return {
+        push: mockPush,
+      }
+    },
+  }
+})
+
 describe("<CreateAccount />", () => {
   let mockedClient: MockApolloClient
   let renderResult: RenderResult
@@ -94,6 +109,11 @@ describe("<CreateAccount />", () => {
 
     expect(window.alert).toHaveBeenCalledWith("Account Created! Log in now!")
     const mutationError = getByRole("alert")
+    expect(mockPush).toHaveBeenCalledWith("/")
     expect(mutationError).toHaveTextContent("mutation-error")
+  })
+
+  afterAll(() => {
+    jest.clearAllMocks()
   })
 })
