@@ -24,3 +24,23 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import "@testing-library/cypress/add-commands"
+
+Cypress.Commands.add("assertLoggedIn", () => {
+  cy.window().its("localStorage.juber-token").should("be.a", "string")
+})
+
+Cypress.Commands.add("assertLoggedOut", () => {
+  cy.window().its("localStorage.juber-token").should("be.undefined")
+})
+
+Cypress.Commands.add("login", (email: string, password: string) => {
+  cy.visit("/")
+  //@ts-ignore
+  cy.assertLoggedOut()
+  cy.title().should("eq", "Login | Juber Eats")
+  cy.findByPlaceholderText(/email/i).type(email)
+  cy.findByPlaceholderText(/password/i).type(password)
+  cy.findByRole("button").click()
+  // @ts-ignore
+  cy.assertLoggedIn()
+})
