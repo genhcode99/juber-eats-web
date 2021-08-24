@@ -1,13 +1,13 @@
-import React from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
+import { Helmet } from "react-helmet-async"
 import {
   createRestaurant,
   createRestaurantVariables,
 } from "../../graphql_type/createRestaurant"
-import { gql, useMutation } from "@apollo/client"
 import Button from "../../components/Button"
+import { gql, useMutation } from "@apollo/client"
 import { FormError } from "../../components/FormError"
-import { Helmet } from "react-helmet-async"
 
 // <==========( GraphQl )==========>
 const CREATE_RESTAURANT_MUTATION = gql`
@@ -23,15 +23,26 @@ interface IFormProps {
   name: string
   address: string
   categoryName: string
+  file: FileList
 }
 
 // <==========( Featrue )==========>
 export const AddRestaurants = () => {
+  // [ State ]
+  const [uploading, setUploading] = useState(false)
+
+  // [ onCompleted 정의]
+  const onCompleted = (data: createRestaurant) => {
+    const { ok, error } = data.createRestaurant
+    if (ok) {
+      setUploading(false)
+    }
+  }
   // [ mutation 정의 ]
-  const [createRestaurantMutation, { loading, data }] = useMutation<
+  const [createRestaurantMutation, { data }] = useMutation<
     createRestaurant,
     createRestaurantVariables
-  >(CREATE_RESTAURANT_MUTATION)
+  >(CREATE_RESTAURANT_MUTATION, { onCompleted })
 
   // [ userForm 정의 ]
   const {
@@ -43,8 +54,33 @@ export const AddRestaurants = () => {
   } = useForm<IFormProps>({ mode: "onChange" })
 
   // [ onSubmit 함수 정의 ]
-  const onSubmit = () => {
-    console.log(getValues())
+  const onSubmit = async () => {
+    // 사진파일 업로드 S3, url 가져오기
+    try {
+      setUploading(true)
+      const { file, name, categoryName, address } = getValues()
+      const actualFile = file[0]
+      const formBody = new FormData()
+      formBody.append("file", actualFile)
+      const { url: coverImg } = await (
+        await fetch("http://localhost:4000/uploads/", {
+          method: "POST",
+          body: formBody,
+        })
+      ).json()
+
+      // 데이터베이스에 업로드
+      createRestaurantMutation({
+        variables: {
+          input: {
+            name,
+            address,
+            categoryName,
+            coverImg,
+          },
+        },
+      })
+    } catch (e) {}
   }
 
   // <==========( Presenter )==========>
@@ -90,9 +126,17 @@ export const AddRestaurants = () => {
           <FormError errorMessage={errors.categoryName?.message} />
         )}
 
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            {...register("file", { required: true })}
+          />
+        </div>
+
         <Button
           canClick={formState.isValid}
-          loading={loading}
+          loading={uploading}
           actionText="Create Restaurant"
         />
         {data?.createRestaurant.error && (
