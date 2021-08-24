@@ -9,27 +9,49 @@ import { EditProfile } from "../screens/user/EditProfile"
 import { Search } from "../screens/client/Search"
 import { Category } from "../screens/client/Category"
 import { Restaurant } from "../screens/client/Restaurant"
+import { MyRestaurants } from "../screens/owner/MyRestaurants"
 
 // <==========( Route )==========>
-const ClientRoutes = [
-  <Route key={1} exact path="/">
-    <Restaurants />
-  </Route>,
-  <Route key={2} path="/confirm">
-    <ConfirmEmail />
-  </Route>,
-  <Route key={3} path="/edit-profile">
-    <EditProfile />
-  </Route>,
-  <Route key={4} path="/search">
-    <Search />
-  </Route>,
-  <Route key={5} path="/category/:slug">
-    <Category />
-  </Route>,
-  <Route key={6} path="/restaurants/:id">
-    <Restaurant />
-  </Route>,
+interface IRoustes {
+  path: string
+  component: any
+}
+
+const clientRoutes: IRoustes[] = [
+  {
+    path: "/",
+    component: <Restaurants />,
+  },
+  {
+    path: "/search",
+    component: <Search />,
+  },
+  {
+    path: "/category/:slug",
+    component: <Category />,
+  },
+  {
+    path: "/restaurants/:id",
+    component: <Restaurant />,
+  },
+]
+
+const commonRoutes: IRoustes[] = [
+  {
+    path: "/confirm",
+    component: <ConfirmEmail />,
+  },
+  {
+    path: "/edit-profile",
+    component: <EditProfile />,
+  },
+]
+
+const restaurantRoutes: IRoustes[] = [
+  {
+    path: "/",
+    component: <MyRestaurants />,
+  },
 ]
 
 // <==========( 컴포넌트 )==========>
@@ -49,7 +71,26 @@ export const LoggedInRouter = () => {
     <Router>
       <Header />
       <Switch>
-        {data.me.role === "Client" && ClientRoutes}
+        {commonRoutes.map((route) => (
+          <Route key={route.path} path={route.path}>
+            {route.component}
+          </Route>
+        ))}
+
+        {data.me.role === "Client" &&
+          clientRoutes.map((route) => (
+            <Route key={route.path} path={route.path}>
+              {route.component}
+            </Route>
+          ))}
+
+        {data.me.role === "Owner" &&
+          restaurantRoutes.map((route) => (
+            <Route key={route.path} path={route.path}>
+              {route.component}
+            </Route>
+          ))}
+
         <Route>
           <NotFound />
         </Route>
