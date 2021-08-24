@@ -25,6 +25,16 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import "@testing-library/cypress/add-commands"
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      assertLoggedIn(): void
+      assertLoggedOut(): void
+      login(email: string, password: string): void
+    }
+  }
+}
+
 Cypress.Commands.add("assertLoggedIn", () => {
   cy.window().its("localStorage.juber-token").should("be.a", "string")
 })
@@ -35,12 +45,10 @@ Cypress.Commands.add("assertLoggedOut", () => {
 
 Cypress.Commands.add("login", (email: string, password: string) => {
   cy.visit("/")
-  //@ts-ignore
   cy.assertLoggedOut()
   cy.title().should("eq", "Login | Juber Eats")
   cy.findByPlaceholderText(/email/i).type(email)
   cy.findByPlaceholderText(/password/i).type(password)
   cy.findByRole("button").click()
-  // @ts-ignore
   cy.assertLoggedIn()
 })

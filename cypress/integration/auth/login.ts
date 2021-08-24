@@ -22,7 +22,6 @@ describe("Log In", () => {
   })
 
   it("can fill out the form and login", () => {
-    //@ts-ignore
     user.login("test@email.com", "testPassword")
   })
 })

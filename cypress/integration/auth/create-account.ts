@@ -41,7 +41,6 @@ describe("Create Account", () => {
     user.findByPlaceholderText(/password/i).type("testPassword")
     user.findByRole("button").click()
     user.wait(1000)
-    //@ts-ignore
     user.login("test@email.com", "testPassword")
   })
 })
