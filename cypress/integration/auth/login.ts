@@ -21,7 +21,7 @@ describe("Log In", () => {
     user.findByRole("alert").should("have.text", "Password Is Required")
   })
 
-  it("can fill out the form", () => {
+  it("can fill out the form and login", () => {
     user.visit("/")
     user.findByPlaceholderText(/email/i).type("Client@email.com")
     user.findByPlaceholderText(/password/i).type("123")
@@ -29,6 +29,6 @@ describe("Log In", () => {
       .findByRole("button")
       .should("not.have.class", "pointer-events-none")
       .click()
-    user.window().its("localStorage.juber-token").should("be.a", "string ")
+    user.window().its("localStorage.juber-token").should("be.a", "string")
   })
 })
