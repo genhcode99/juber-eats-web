@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
 import { useHistory, useParams } from "react-router-dom"
@@ -22,12 +22,13 @@ interface IForm {
   name: string
   price: string
   description: string
+  [key: string]: string
 }
 
 // <==========( Features )==========>
 export const AddDish = () => {
   // [ state ]
-  const [optionsNumber, setOptionsNumber] = useState(0)
+  const [optionsNumber, setOptionsNumber] = useState<number[]>([])
 
   // [ hooks ]
   const { restaurantId } = useParams<{ restaurantId: string }>()
@@ -61,31 +62,35 @@ export const AddDish = () => {
   // [ onSubmit ]
   const onSubmit = () => {
     const { name, price, description, ...rest } = getValues()
-    console.log(rest)
-    // createDishMutation({
-    //   variables: {
-    //     input: {
-    //       name,
-    //       description,
-    //       price: +price,
-    //       restaurantId: +restaurantId,
-    //     },
-    //   },
-    // })
-    // history.goBack()
+    const optionObject = optionsNumber.map((theId) => ({
+      name: rest[`${theId}-optionName`],
+      extra: +rest[`${theId}-optionExtra`],
+    }))
+
+    createDishMutation({
+      variables: {
+        input: {
+          name,
+          description,
+          price: +price,
+          restaurantId: +restaurantId,
+          options: optionObject,
+        },
+      },
+    })
+    history.goBack()
   }
 
   // [ onAddOptionClick ]
+
   const onAddOptionClick = () => {
-    setOptionsNumber((current) => current + 1)
+    setOptionsNumber((current) => [Date.now(), ...current])
   }
 
   // [ onDeleteClick ]
   const onDeleteClick = (idToDelete: number) => {
-    setOptionsNumber((current) => current - 1)
-    // @ts-ignore
+    setOptionsNumber((current) => current.filter((id) => id !== idToDelete))
     setValue(`${idToDelete}-optionName`, "")
-    // @ts-ignore
     setValue(`${idToDelete}-optionExtra`, "")
   }
 
@@ -136,25 +141,29 @@ export const AddDish = () => {
           >
             Add Dish Option
           </span>
-          {optionsNumber !== 0 &&
-            Array.from(new Array(optionsNumber)).map((_, index) => (
-              <div key={index} className="mt-5">
+          {optionsNumber.length !== 0 &&
+            optionsNumber.map((id) => (
+              <div key={id} className="mt-5">
                 <input
-                  //@ts-ignore
-                  {...register(`${index}-optionName`)}
+                  {...register(`${id}-optionName`)}
                   className="py-2 px-4 focus:outline-none mr-3 focus:border-gray-600 border-2"
                   type="text"
                   placeholder="Option Name"
                 />
                 <input
-                  //@ts-ignore
-                  {...register(`${index}-optionExtra`)}
+                  {...register(`${id}-optionExtra`)}
                   className="py-2 px-4 focus:outline-none focus:border-gray-600 border-2"
                   type="number"
+                  defaultValue={0}
                   min={0}
                   placeholder="Option Extra"
                 />
-                <span onClick={() => onDeleteClick(index)}>Delete Option</span>
+                <span
+                  className="cursor-pointer text-white bg-red-500 ml-3 mt-5 py-3 px-4"
+                  onClick={() => onDeleteClick(id)}
+                >
+                  Delete Option
+                </span>
               </div>
             ))}
         </div>
