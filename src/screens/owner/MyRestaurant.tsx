@@ -1,12 +1,13 @@
-import { gql, useQuery } from "@apollo/client"
 import React from "react"
-import { Link, useParams } from "react-router-dom"
-import { Dish } from "../../components/Dish"
-import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments"
 import {
   myRestaurant,
   myRestaurantVariables,
 } from "../../graphql_type/myRestaurant"
+import { VictoryChart, VictoryBar, VictoryAxis } from "victory"
+import { Dish } from "../../components/Dish"
+import { gql, useQuery } from "@apollo/client"
+import { Link, useParams } from "react-router-dom"
+import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments"
 
 // <==========( GraphQl )==========>
 export const MY_RESTAURANT_QUERY = gql`
@@ -41,7 +42,6 @@ export const MyRestaurant = () => {
     MY_RESTAURANT_QUERY,
     { variables: { input: { id: +id } } },
   )
-  console.log(data)
 
   // <==========( Presenter )==========>
   return (
@@ -73,6 +73,7 @@ export const MyRestaurant = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-10 mt-16">
               {data?.myRestaurant.restaurant?.menu?.map((dish) => (
                 <Dish
+                  key={dish.id}
                   name={dish.name}
                   description={dish.description}
                   price={dish.price}
@@ -80,6 +81,30 @@ export const MyRestaurant = () => {
               ))}
             </div>
           )}
+        </div>
+        <div className="mt-20 mb-10">
+          <h4 className="text-center text-2xl font-medium">Sales</h4>
+          <div className="max-w-lg w-full mx-auto">
+            <VictoryChart domainPadding={20}>
+              <VictoryAxis
+                label="Amount of money"
+                dependentAxis
+                tickValues={[20, 30, 40, 50, 60]}
+              />
+              <VictoryAxis
+                label="Days of Life"
+                tickValues={[10, 20, 30, 40, 50]}
+              />
+              <VictoryBar
+                data={[
+                  { x: 10, y: 20 },
+                  { x: 20, y: 5 },
+                  { x: 30, y: 55 },
+                  { x: 40, y: 99 },
+                ]}
+              />
+            </VictoryChart>
+          </div>
         </div>
       </div>
     </div>
