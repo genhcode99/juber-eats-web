@@ -34,7 +34,7 @@ export const Search = () => {
   const location = useLocation()
   const history = useHistory()
 
-  const [searchRestaurantQuery, { loading, data, called }] = useLazyQuery<
+  const [searchRestaurantQuery, { data }] = useLazyQuery<
     searchRestaurant,
     searchRestaurantVariables
   >(SEARCH_RESTAURANT)
@@ -48,7 +48,7 @@ export const Search = () => {
     searchRestaurantQuery({
       variables: { input: { page, query } },
     })
-  }, [history, location.search])
+  }, [history, location.search, page, searchRestaurantQuery])
 
   // pagination
   const onClickNext = () => setPage((current) => current + 1)

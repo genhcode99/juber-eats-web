@@ -128,15 +128,15 @@ export const AddRestaurants = () => {
 
   // <==========( Presenter )==========>
   return (
-    <div className="container">
+    <div className="container flex flex-col items-center mt-52">
       <Helmet>
         <title>Add Restaurant | Juber Eats</title>
       </Helmet>
-      <h4 className="font-semibold text-2xl mb-3 max-w-screen-sm mx-auto">
+      <h4 className="font-semibold text-2xl mb-3 max-w-screen-sm">
         Add Restaurant
       </h4>
       <form
-        className="grid max-w-screen-sm gap-3 my-5 w-full mx-auto"
+        className="grid max-w-screen-sm gap-3 my-5 w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
         <input

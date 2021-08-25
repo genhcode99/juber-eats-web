@@ -36,7 +36,7 @@ const restaurantRoutes: IRoustes[] = [
   { path: "/", component: <MyRestaurants /> },
   { path: "/add-restaurant", component: <AddRestaurants /> },
   { path: "/restaurants/:id", component: <MyRestaurant /> },
-  { path: "/restaurants/:id/add-dish", component: <AddDish /> },
+  { path: "/restaurants/:restaurantId/add-dish", component: <AddDish /> },
 ]
 
 // <==========( 기능 )==========>

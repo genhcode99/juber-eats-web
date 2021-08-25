@@ -27,10 +27,9 @@ export const Restaurant = () => {
   // hook
   const { id } = useParams<IParamsType>()
 
-  const { loading, data } = useQuery<restaurant, restaurantVariables>(
-    RESTAURANT_QUERY,
-    { variables: { input: { restaurantId: +id } } },
-  )
+  const { data } = useQuery<restaurant, restaurantVariables>(RESTAURANT_QUERY, {
+    variables: { input: { restaurantId: +id } },
+  })
 
   const restaurant = data?.restaurant.restaurant
 

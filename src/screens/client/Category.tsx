@@ -38,10 +38,10 @@ export const Category = () => {
   const { slug } = useParams<IPatamsType>()
   const [page, setPage] = useState(1)
 
-  const { data, loading } = useQuery<
-    findCategoryBySlug,
-    findCategoryBySlugVariables
-  >(CATEGORY_QUERY, { variables: { input: { page, slug } } })
+  const { data } = useQuery<findCategoryBySlug, findCategoryBySlugVariables>(
+    CATEGORY_QUERY,
+    { variables: { input: { page, slug } } },
+  )
 
   const categoryName = data?.findCategoryBySlug.category?.name
 

@@ -8,7 +8,7 @@ import {
 } from "../../graphql_type/myRestaurant"
 
 // <==========( GraphQl )==========>
-const MY_RESTAURANT_QUERY = gql`
+export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
     myRestaurant(input: $input) {
       ok
@@ -40,6 +40,7 @@ export const MyRestaurant = () => {
     MY_RESTAURANT_QUERY,
     { variables: { input: { id: +id } } },
   )
+  console.log(data)
 
   // <==========( Presenter )==========>
   return (
