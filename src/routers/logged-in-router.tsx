@@ -11,6 +11,7 @@ import { Category } from "../screens/client/Category"
 import { Restaurant } from "../screens/client/Restaurant"
 import { MyRestaurants } from "../screens/owner/MyRestaurants"
 import { AddRestaurants } from "../screens/owner/AddRestaurants"
+import { MyRestaurant } from "../screens/owner/MyRestaurant"
 
 // <==========( Route )==========>
 interface IRoustes {
@@ -33,11 +34,11 @@ const commonRoutes: IRoustes[] = [
 const restaurantRoutes: IRoustes[] = [
   { path: "/", component: <MyRestaurants /> },
   { path: "/add-restaurant", component: <AddRestaurants /> },
+  { path: "/restaurants/:id", component: <MyRestaurant /> },
 ]
 
-// <==========( 컴포넌트 )==========>
+// <==========( 기능 )==========>
 export const LoggedInRouter = () => {
-  // <==========( 기능 )==========>
   const { data, loading, error } = useMe()
 
   // <==========( Loading 화면 출력 )==========>
