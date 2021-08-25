@@ -6,8 +6,10 @@ import {
   createRestaurantVariables,
 } from "../../graphql_type/createRestaurant"
 import Button from "../../components/Button"
-import { gql, useMutation } from "@apollo/client"
+import { gql, useApolloClient, useMutation } from "@apollo/client"
 import { FormError } from "../../components/FormError"
+import { MY_RESTAURANTS_QUERY } from "./MyRestaurants"
+import { useHistory } from "react-router-dom"
 
 // <==========( GraphQl )==========>
 const CREATE_RESTAURANT_MUTATION = gql`
@@ -15,6 +17,7 @@ const CREATE_RESTAURANT_MUTATION = gql`
     createRestaurant(input: $input) {
       ok
       error
+      restaurantId
     }
   }
 `
@@ -30,19 +33,58 @@ interface IFormProps {
 export const AddRestaurants = () => {
   // [ State ]
   const [uploading, setUploading] = useState(false)
+  const [imageUrl, setImageUrl] = useState("")
+
+  // [ Hooks ]
+  const client = useApolloClient()
+  const history = useHistory()
 
   // [ onCompleted 정의]
   const onCompleted = (data: createRestaurant) => {
-    const { ok, error } = data.createRestaurant
+    const { ok, restaurantId } = data.createRestaurant
     if (ok) {
+      const { name, categoryName, address } = getValues()
       setUploading(false)
+
+      // 현재의 캐쉬상태를 읽음
+      const queryResult = client.readQuery({ query: MY_RESTAURANTS_QUERY })
+      console.log(queryResult)
+      // 캐쉬를 작성
+      client.writeQuery({
+        query: MY_RESTAURANTS_QUERY,
+        data: {
+          myRestaurants: {
+            ...queryResult.myRestaurants,
+            restaurants: [
+              {
+                address,
+                category: {
+                  name: categoryName,
+                  __typename: "Category",
+                },
+                coverImg: imageUrl,
+                id: restaurantId,
+                isPromoted: false,
+                name,
+                __typename: "Restaurant",
+              },
+              ...queryResult.myRestaurants.restaurants,
+            ],
+          },
+        },
+      })
+      history.push("/")
     }
   }
+
   // [ mutation 정의 ]
   const [createRestaurantMutation, { data }] = useMutation<
     createRestaurant,
     createRestaurantVariables
-  >(CREATE_RESTAURANT_MUTATION, { onCompleted })
+  >(CREATE_RESTAURANT_MUTATION, {
+    onCompleted,
+    // refetchQueries: [{ query: MY_RESTAURANTS_QUERY }], 이렇게 하면 리페치가 되지만 느려질수 있다.
+  })
 
   // [ userForm 정의 ]
   const {
@@ -68,6 +110,7 @@ export const AddRestaurants = () => {
           body: formBody,
         })
       ).json()
+      setImageUrl(coverImg)
 
       // 데이터베이스에 업로드
       createRestaurantMutation({
@@ -89,9 +132,11 @@ export const AddRestaurants = () => {
       <Helmet>
         <title>Add Restaurant | Juber Eats</title>
       </Helmet>
-      <h1>Add Restaurant</h1>
+      <h4 className="font-semibold text-2xl mb-3 max-w-screen-sm mx-auto">
+        Add Restaurant
+      </h4>
       <form
-        className="grid gap-3 mt-5 w-full mb-5"
+        className="grid max-w-screen-sm gap-3 my-5 w-full mx-auto"
         onSubmit={handleSubmit(onSubmit)}
       >
         <input

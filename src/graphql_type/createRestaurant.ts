@@ -10,9 +10,10 @@ import { CreateRestaurantInput } from "./globalTypes";
 // ====================================================
 
 export interface createRestaurant_createRestaurant {
-  __typename: "CreateAccountOutput";
+  __typename: "CreateRestaurantOutput";
   ok: boolean;
   error: string | null;
+  restaurantId: number | null;
 }
 
 export interface createRestaurant {
