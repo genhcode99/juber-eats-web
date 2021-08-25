@@ -3,7 +3,7 @@ import {
   myRestaurant,
   myRestaurantVariables,
 } from "../../graphql_type/myRestaurant"
-import { VictoryChart, VictoryBar, VictoryAxis } from "victory"
+import { VictoryChart, VictoryPie, VictoryAxis } from "victory"
 import { Dish } from "../../components/Dish"
 import { gql, useQuery } from "@apollo/client"
 import { Link, useParams } from "react-router-dom"
@@ -42,6 +42,23 @@ export const MyRestaurant = () => {
     MY_RESTAURANT_QUERY,
     { variables: { input: { id: +id } } },
   )
+
+  // [ char data 정의]
+  const chartData: { x: number; y: number }[] = [
+    { x: 1, y: 3000 },
+    { x: 2, y: 1500 },
+    { x: 3, y: 4250 },
+    { x: 4, y: 2300 },
+    { x: 5, y: 7150 },
+    { x: 6, y: 6830 },
+    { x: 8, y: 8000 },
+    { x: 9, y: 7000 },
+    { x: 10, y: 6000 },
+    { x: 11, y: 2000 },
+    { x: 12, y: 4000 },
+    { x: 13, y: 9000 },
+    { x: 14, y: 8000 },
+  ]
 
   // <==========( Presenter )==========>
   return (
@@ -85,25 +102,10 @@ export const MyRestaurant = () => {
         <div className="mt-20 mb-10">
           <h4 className="text-center text-2xl font-medium">Sales</h4>
           <div className="max-w-lg w-full mx-auto">
-            <VictoryChart domainPadding={20}>
-              <VictoryAxis
-                label="Amount of money"
-                dependentAxis
-                tickValues={[20, 30, 40, 50, 60]}
-              />
-              <VictoryAxis
-                label="Days of Life"
-                tickValues={[10, 20, 30, 40, 50]}
-              />
-              <VictoryBar
-                data={[
-                  { x: 10, y: 20 },
-                  { x: 20, y: 5 },
-                  { x: 30, y: 55 },
-                  { x: 40, y: 99 },
-                ]}
-              />
-            </VictoryChart>
+            <VictoryPie
+              data={chartData}
+              colorScale={["tomato", "orange", "gold", "cyan", "navy"]}
+            />
           </div>
         </div>
       </div>
