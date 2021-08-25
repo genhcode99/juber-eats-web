@@ -12,6 +12,7 @@ import { Restaurant } from "../screens/client/Restaurant"
 import { MyRestaurants } from "../screens/owner/MyRestaurants"
 import { AddRestaurants } from "../screens/owner/AddRestaurants"
 import { MyRestaurant } from "../screens/owner/MyRestaurant"
+import { AddDish } from "../screens/owner/AddDish"
 
 // <==========( Route )==========>
 interface IRoustes {
@@ -35,6 +36,7 @@ const restaurantRoutes: IRoustes[] = [
   { path: "/", component: <MyRestaurants /> },
   { path: "/add-restaurant", component: <AddRestaurants /> },
   { path: "/restaurants/:id", component: <MyRestaurant /> },
+  { path: "/restaurants/:id/add-dish", component: <AddDish /> },
 ]
 
 // <==========( 기능 )==========>
