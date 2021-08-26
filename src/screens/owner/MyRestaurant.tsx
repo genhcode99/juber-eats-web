@@ -57,24 +57,6 @@ export const MyRestaurant = () => {
     MY_RESTAURANT_QUERY,
     { variables: { input: { id: +id } } },
   )
-  console.log(data)
-
-  // [ char data 정의]
-  const chartData: { x: number; y: number }[] = [
-    { x: 1, y: 3000 },
-    { x: 2, y: 1500 },
-    { x: 3, y: 4250 },
-    { x: 4, y: 2300 },
-    { x: 5, y: 7150 },
-    { x: 6, y: 6830 },
-    { x: 8, y: 8000 },
-    { x: 9, y: 7000 },
-    { x: 10, y: 6000 },
-    { x: 11, y: 2000 },
-    { x: 12, y: 4000 },
-    { x: 13, y: 9000 },
-    { x: 14, y: 8000 },
-  ]
 
   // <==========( Presenter )==========>
   return (
