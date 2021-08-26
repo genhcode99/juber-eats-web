@@ -3,26 +3,33 @@ import { restaurant_restaurant_restaurant_menu_options } from "../graphql_type/r
 
 // <==========( Settings )==========>
 interface IDishProps {
+  id?: number
   description: string
   name: string
   price: number
   isCustomer?: boolean
+  orderStarted?: boolean
+  addItemToOrder: (dishId: number) => void
   options?: restaurant_restaurant_restaurant_menu_options[] | null
 }
 
 // <==========( Features )==========>
 export const Dish: React.FC<IDishProps> = ({
-  description,
   name,
   price,
-  isCustomer = false,
+  id = 0,
   options,
+  description,
+  addItemToOrder,
+  isCustomer = false,
+  orderStarted = false,
 }) => {
-  console.log(options)
-
   // <==========( Presenter )==========>
   return (
-    <div className="px-8 py-4 pb-8 border hover:border-gray-800 transition-all">
+    <div
+      onClick={() => (orderStarted ? addItemToOrder(id) : null)}
+      className="px-8 py-4 pb-8 border hover:border-gray-800 transition-all"
+    >
       <div className="mb-5">
         <h3 className="text-lg font-medium ">{name}</h3>
         <h4 className="font-medium">{description}</h4>
