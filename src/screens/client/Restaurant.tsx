@@ -55,8 +55,10 @@ export const Restaurant = () => {
   const triggerStartOrder = () => {
     setOrderStarted(true)
   }
-  const isSelected = (dishId: number) =>
-    Boolean(orderItems.find((order) => order.dishId === dishId))
+  const getItem = (dishId: number) => {
+    return orderItems.find((order) => order.dishId === dishId)
+  }
+  const isSelected = (dishId: number) => Boolean(getItem(dishId))
 
   const addItemToOrder = (dishId: number) => {
     if (isSelected(dishId)) {
@@ -64,7 +66,22 @@ export const Restaurant = () => {
         current.filter((dish) => dish.dishId !== dishId),
       )
     } else {
-      setOrderItems((current) => [{ dishId }, ...current])
+      setOrderItems((current) => [{ dishId, options: [] }, ...current])
+    }
+  }
+  const addOptionToItem = (dishId: number, options: any) => {
+    if (!isSelected(dishId)) {
+      return
+    }
+    const oldItem = getItem(dishId)
+    if (oldItem) {
+      setOrderItems((current) =>
+        current.filter((dish) => dish.dishId !== dishId),
+      )
+      setOrderItems((current) => [
+        { dishId, options: [options, ...oldItem.options!] },
+        ...current,
+      ])
     }
   }
 
@@ -105,6 +122,7 @@ export const Restaurant = () => {
               isCustomer={true}
               options={dish.options}
               addItemToOrder={addItemToOrder}
+              addOptionToItem={addOptionToItem}
             />
           ))}
         </div>
