@@ -13,6 +13,7 @@ import { MyRestaurants } from "../screens/owner/MyRestaurants"
 import { AddRestaurants } from "../screens/owner/AddRestaurants"
 import { MyRestaurant } from "../screens/owner/MyRestaurant"
 import { AddDish } from "../screens/owner/AddDish"
+import { Order } from "../screens/Order"
 
 // <==========( Route )==========>
 interface IRoustes {
@@ -30,6 +31,7 @@ const clientRoutes: IRoustes[] = [
 const commonRoutes: IRoustes[] = [
   { path: "/confirm", component: <ConfirmEmail /> },
   { path: "/edit-profile", component: <EditProfile /> },
+  { path: "/orders/:id", component: <Order /> },
 ]
 
 const restaurantRoutes: IRoustes[] = [
