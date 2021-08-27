@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   myRestaurant,
   myRestaurantVariables,
@@ -12,13 +12,16 @@ import {
   VictoryLabel,
 } from "victory"
 import { Dish } from "../../components/Dish"
-import { gql, useQuery } from "@apollo/client"
-import { Link, useParams } from "react-router-dom"
+import { gql, useQuery, useSubscription } from "@apollo/client"
+import { Link, useHistory, useParams } from "react-router-dom"
 import {
   DISH_FRAGMENT,
+  FULL_ORDER_FRAGMENT,
   ORDERS_FRAGMENT,
   RESTAURANT_FRAGMENT,
 } from "../../fragments"
+import { Helmet } from "react-helmet-async"
+import { pendingOrders } from "../../graphql_type/pendingOrders"
 
 // <==========( GraphQl )==========>
 export const MY_RESTAURANT_QUERY = gql`
@@ -41,6 +44,14 @@ export const MY_RESTAURANT_QUERY = gql`
   ${DISH_FRAGMENT}
   ${ORDERS_FRAGMENT}
 `
+const PENDING_ORDERS_SUBSCRIPTION = gql`
+  subscription pendingOrders {
+    pendingOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
+`
 
 // <==========( Settings )==========>
 interface IParams {
@@ -49,18 +60,32 @@ interface IParams {
 
 // <==========( Features )==========>
 export const MyRestaurant = () => {
-  // [ hooks ]
+  // <hooks>
   const { id } = useParams<IParams>()
 
-  // [ backend ]
+  // <backend>
   const { data } = useQuery<myRestaurant, myRestaurantVariables>(
     MY_RESTAURANT_QUERY,
     { variables: { input: { id: +id } } },
   )
 
+  // <Subscription>
+  const { data: subscriptionData } = useSubscription<pendingOrders>(
+    PENDING_ORDERS_SUBSCRIPTION,
+  )
+  const history = useHistory()
+  useEffect(() => {
+    if (subscriptionData?.pendingOrders.id) {
+      history.push(`/orders/${subscriptionData.pendingOrders.id}`)
+    }
+  }, [subscriptionData])
+
   // <==========( Presenter )==========>
   return (
     <div>
+      <Helmet>
+        <title>{data?.myRestaurant.restaurant?.name || "Loading"}</title>
+      </Helmet>
       <div
         className="bg-gray-700 py-28 bg-center bg-cover"
         style={{
