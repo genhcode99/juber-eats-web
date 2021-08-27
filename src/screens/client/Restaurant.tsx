@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { gql, useQuery } from "@apollo/client"
-import { useParams } from "react-router-dom"
+import { gql, useMutation, useQuery } from "@apollo/client"
+import { useHistory, useParams } from "react-router-dom"
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments"
 import { restaurant, restaurantVariables } from "../../graphql_type/restaurant"
 import { Dish } from "../../components/Dish"
@@ -10,6 +10,10 @@ import {
   CreateOrderItemInput,
 } from "../../graphql_type/globalTypes"
 import { DishOption } from "../../components/DishOption"
+import {
+  createOrder,
+  createOrderVariables,
+} from "../../graphql_type/createOrder"
 
 // <==========( GraphQl )==========>
 const RESTAURANT_QUERY = gql`
@@ -33,6 +37,7 @@ const CREATE_ORDER_MUTATION = gql`
     createOrder(input: $input) {
       ok
       error
+      orderId
     }
   }
 `
@@ -131,7 +136,38 @@ export const Restaurant = () => {
     return false
   }
 
-  console.log(orderItems)
+  const triggerCancelOrder = () => {
+    setOrderStarted(false)
+    setOrderItems([])
+  }
+
+  const history = useHistory()
+
+  const onCompleted = (data: createOrder) => {
+    const {
+      createOrder: { ok, orderId },
+    } = data
+    if (data.createOrder.ok) {
+      history.push(`/orders/${orderId}`)
+    }
+  }
+
+  const [createOrderMutation, { loading: placeingOrder }] = useMutation<
+    createOrder,
+    createOrderVariables
+  >(CREATE_ORDER_MUTATION, { onCompleted })
+  const triggerConfirmOrder = () => {
+    if (orderItems.length === 0) {
+      alert("Can't place empty order")
+      return
+    }
+    const ok = window.confirm("You are about to place an order")
+    if (ok) {
+      createOrderMutation({
+        variables: { input: { restaurantId: +id, items: orderItems } },
+      })
+    }
+  }
 
   // <==========( Presenter )==========>
   return (
@@ -143,8 +179,8 @@ export const Restaurant = () => {
         className="bg-gray-800 py-48 bg-cover bg-center"
         style={{ backgroundImage: `url(${restaurant?.coverImg})` }}
       >
-        <div className="bg-white w-1/4 py-8 pl-48">
-          <h4 className="text-4xl mb-4">{restaurant?.name}</h4>
+        <div className="bg-white w-3/12 py-8 pl-48">
+          <h4 className="text-4xl mb-3">{restaurant?.name}</h4>
           <h5 className="text-sm font-light mb-2">
             {restaurant?.category?.name}
           </h5>
@@ -152,10 +188,26 @@ export const Restaurant = () => {
         </div>
       </div>
       <div className="container pb-32 flex flex-col items-end mt-20">
-        <button onClick={triggerStartOrder} className="btn  px-10">
-          {orderStarted ? "Ordering" : "Start Order"}
-        </button>
-        <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-10 mt-16">
+        {!orderStarted && (
+          <button onClick={triggerStartOrder} className="btn px-10">
+            Start Order
+          </button>
+        )}
+        {orderStarted && (
+          <div className="flex items-center">
+            <button onClick={triggerConfirmOrder} className="btn px-10 mr-3">
+              Confirm Order
+            </button>
+            <button
+              onClick={triggerCancelOrder}
+              className="btn px-10 bg-black hover:bg-black"
+            >
+              Cancel Order
+            </button>
+          </div>
+        )}
+
+        <div className="w-full grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
           {restaurant?.menu?.map((dish) => (
             <Dish
               isSelected={isSelected(dish.id)}
