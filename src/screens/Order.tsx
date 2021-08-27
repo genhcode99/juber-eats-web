@@ -1,5 +1,5 @@
 import { gql, useQuery, useSubscription } from "@apollo/client"
-import React from "react"
+import React, { useEffect } from "react"
 import { Helmet } from "react-helmet-async"
 import { useParams } from "react-router-dom"
 import { FULL_ORDER_FRAGMENT } from "../fragments"
@@ -42,16 +42,40 @@ export const Order = () => {
   const params = useParams<IParams>()
 
   // <Order 정보 가져오기>
-  const { data } = useQuery<getOrder, getOrderVariables>(GET_ORDER_QUERY, {
-    variables: { input: { id: +params.id } },
-  })
+  const { data, subscribeToMore } = useQuery<getOrder, getOrderVariables>(
+    GET_ORDER_QUERY,
+    {
+      variables: { input: { id: +params.id } },
+    },
+  )
 
-  // <Subscription 사용하기>
-  const { data: subscriptionData } = useSubscription<
-    orderUpdates,
-    orderUpdatesVariables
-  >(ORDER_SUBSCRIPTION, { variables: { input: { id: +params.id } } })
-  console.log(subscriptionData)
+  // <Subscribe To More>
+  useEffect(() => {
+    if (data?.getOrder.ok) {
+      subscribeToMore({
+        document: ORDER_SUBSCRIPTION,
+        variables: { input: { id: +params.id } },
+        updateQuery: (
+          prev,
+          {
+            subscriptionData: { data },
+          }: { subscriptionData: { data: orderUpdates } },
+        ) => {
+          if (!data) return prev
+          return {
+            getOrder: { ...prev.getOrder, order: { ...data.orderUpdates } },
+          }
+        },
+      })
+    }
+  }, [data])
+
+  // <Subscription 사용하기 - 따로 사용할 경우>
+  // const { data: subscriptionData } = useSubscription<
+  //   orderUpdates,
+  //   orderUpdatesVariables
+  // >(ORDER_SUBSCRIPTION, { variables: { input: { id: +params.id } } })
+  // console.log(subscriptionData)
 
   // <==========( Presenter )==========>
   return (
