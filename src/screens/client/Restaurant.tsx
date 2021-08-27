@@ -5,7 +5,10 @@ import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments"
 import { restaurant, restaurantVariables } from "../../graphql_type/restaurant"
 import { Dish } from "../../components/Dish"
 import { Helmet } from "react-helmet-async"
-import { CreateOrderItemInput } from "../../graphql_type/globalTypes"
+import {
+  CreateOrderInput,
+  CreateOrderItemInput,
+} from "../../graphql_type/globalTypes"
 
 // <==========( GraphQl )==========>
 const RESTAURANT_QUERY = gql`
@@ -75,13 +78,31 @@ export const Restaurant = () => {
     }
     const oldItem = getItem(dishId)
     if (oldItem) {
-      setOrderItems((current) =>
-        current.filter((dish) => dish.dishId !== dishId),
+      const hasOption = Boolean(
+        oldItem.options?.find((aOption) => aOption.name === options.name),
       )
-      setOrderItems((current) => [
-        { dishId, options: [options, ...oldItem.options!] },
-        ...current,
-      ])
+      if (!hasOption) {
+        setOrderItems((current) =>
+          current.filter((dish) => dish.dishId !== dishId),
+        )
+        setOrderItems((current) => [
+          { dishId, options: [options, ...oldItem.options!] },
+          ...current,
+        ])
+      }
+    }
+  }
+  const getOptionFromItem = (
+    item: CreateOrderItemInput,
+    optionName: string,
+  ) => {
+    return item.options?.find((option) => option.name === optionName)
+  }
+
+  const isOptionSelected = (dishId: number, optionName: string) => {
+    const item = getItem(dishId)
+    if (item) {
+      return Boolean(getOptionFromItem(item, optionName))
     }
   }
 
@@ -122,8 +143,26 @@ export const Restaurant = () => {
               isCustomer={true}
               options={dish.options}
               addItemToOrder={addItemToOrder}
-              addOptionToItem={addOptionToItem}
-            />
+            >
+              {dish.options?.map((option, i) => (
+                <span
+                  onClick={() =>
+                    addOptionToItem
+                      ? addOptionToItem(dish.id, { name: option.name })
+                      : null
+                  }
+                  key={i}
+                  className={`flex border items-center cursor-pointer ${
+                    isOptionSelected(dish.id, option.name)
+                      ? "border-gray-800"
+                      : ""
+                  }`}
+                >
+                  <h6 className="mr-2">{option.name}</h6>
+                  <h6 className="text-sm opacity-75">$ {option.extra}</h6>
+                </span>
+              ))}
+            </Dish>
           ))}
         </div>
       </div>

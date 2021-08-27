@@ -1,18 +1,17 @@
-import React from "react"
+import React, { Children } from "react"
 import { restaurant_restaurant_restaurant_menu_options } from "../graphql_type/restaurant"
 
 // <==========( Settings )==========>
 interface IDishProps {
   id?: number
-  description: string
   name: string
   price: number
+  description: string
   isCustomer?: boolean
+  isSelected?: boolean
   orderStarted?: boolean
   addItemToOrder?: (dishId: number) => void
   options?: restaurant_restaurant_restaurant_menu_options[] | null
-  isSelected?: boolean
-  addOptionToItem?: (dishId: number, options: any) => void
 }
 
 // <==========( Features )==========>
@@ -24,9 +23,9 @@ export const Dish: React.FC<IDishProps> = ({
   isSelected,
   description,
   addItemToOrder,
-  addOptionToItem,
   isCustomer = false,
   orderStarted = false,
+  children: dishOptions,
 }) => {
   // <==========( Presenter )==========>
   return (
@@ -55,20 +54,7 @@ export const Dish: React.FC<IDishProps> = ({
       {isCustomer && options && options?.length !== 0 && (
         <div>
           <h5 className="mt-8 my-3 font-medium">Dish Options:</h5>
-          {options?.map((option, i) => (
-            <span
-              onClick={() =>
-                addOptionToItem
-                  ? addOptionToItem(id, { name: option.name })
-                  : null
-              }
-              key={i}
-              className="flex border items-center cursor-pointer"
-            >
-              <h6 className="mr-2">{option.name}</h6>
-              <h6 className="text-sm opacity-75">$ {option.extra}</h6>
-            </span>
-          ))}
+          {dishOptions}
         </div>
       )}
     </div>
