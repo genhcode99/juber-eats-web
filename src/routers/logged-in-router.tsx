@@ -14,6 +14,8 @@ import { AddRestaurants } from "../screens/owner/AddRestaurants"
 import { MyRestaurant } from "../screens/owner/MyRestaurant"
 import { AddDish } from "../screens/owner/AddDish"
 import { Order } from "../screens/Order"
+import { DashBoard } from "../screens/driver/DashBoard"
+import { UserRole } from "../graphql_type/globalTypes"
 
 // <==========( Route )==========>
 interface IRoustes {
@@ -41,6 +43,8 @@ const restaurantRoutes: IRoustes[] = [
   { path: "/restaurants/:restaurantId/add-dish", component: <AddDish /> },
 ]
 
+const driverRoutes: IRoustes[] = [{ path: "/", component: <DashBoard /> }]
+
 // <==========( 기능 )==========>
 export const LoggedInRouter = () => {
   const { data, loading, error } = useMe()
@@ -63,15 +67,22 @@ export const LoggedInRouter = () => {
           </Route>
         ))}
 
-        {data.me.role === "Client" &&
+        {data.me.role === UserRole.Client &&
           clientRoutes.map((route) => (
             <Route key={route.path} exact path={route.path}>
               {route.component}
             </Route>
           ))}
 
-        {data.me.role === "Owner" &&
+        {data.me.role === UserRole.Owner &&
           restaurantRoutes.map((route) => (
+            <Route key={route.path} exact path={route.path}>
+              {route.component}
+            </Route>
+          ))}
+
+        {data.me.role === UserRole.Delivery &&
+          driverRoutes.map((route) => (
             <Route key={route.path} exact path={route.path}>
               {route.component}
             </Route>
