@@ -72,6 +72,11 @@ export interface DishOptionsInputType {
   extra?: number | null;
 }
 
+export interface EditOrderInput {
+  id: number;
+  status: OderStatus;
+}
+
 export interface EditProfileInput {
   email?: string | null;
   password?: string | null;
