@@ -9,6 +9,7 @@ import {
   CreateOrderInput,
   CreateOrderItemInput,
 } from "../../graphql_type/globalTypes"
+import { DishOption } from "../../components/DishOption"
 
 // <==========( GraphQl )==========>
 const RESTAURANT_QUERY = gql`
@@ -72,26 +73,49 @@ export const Restaurant = () => {
       setOrderItems((current) => [{ dishId, options: [] }, ...current])
     }
   }
-  const addOptionToItem = (dishId: number, options: any) => {
+  const addOptionToItem = (dishId: number, optionName: string) => {
     if (!isSelected(dishId)) {
       return
     }
     const oldItem = getItem(dishId)
     if (oldItem) {
       const hasOption = Boolean(
-        oldItem.options?.find((aOption) => aOption.name === options.name),
+        oldItem.options?.find((aOption) => aOption.name === optionName),
       )
       if (!hasOption) {
         setOrderItems((current) =>
           current.filter((dish) => dish.dishId !== dishId),
         )
         setOrderItems((current) => [
-          { dishId, options: [options, ...oldItem.options!] },
+          { dishId, options: [{ name: optionName }, ...oldItem.options!] },
           ...current,
         ])
       }
     }
   }
+
+  const removeOptionFromItem = (dishId: number, optionName: string) => {
+    if (!isSelected(dishId)) {
+      return
+    }
+    const oldItem = getItem(dishId)
+    if (oldItem) {
+      setOrderItems((current) =>
+        current.filter((dish) => dish.dishId !== dishId),
+      )
+      setOrderItems((current) => [
+        {
+          dishId,
+          options: oldItem.options?.filter(
+            (option) => option.name !== optionName,
+          ),
+        },
+        ...current,
+      ])
+      return
+    }
+  }
+
   const getOptionFromItem = (
     item: CreateOrderItemInput,
     optionName: string,
@@ -104,6 +128,7 @@ export const Restaurant = () => {
     if (item) {
       return Boolean(getOptionFromItem(item, optionName))
     }
+    return false
   }
 
   console.log(orderItems)
@@ -145,22 +170,15 @@ export const Restaurant = () => {
               addItemToOrder={addItemToOrder}
             >
               {dish.options?.map((option, i) => (
-                <span
-                  onClick={() =>
-                    addOptionToItem
-                      ? addOptionToItem(dish.id, { name: option.name })
-                      : null
-                  }
+                <DishOption
                   key={i}
-                  className={`flex border items-center cursor-pointer ${
-                    isOptionSelected(dish.id, option.name)
-                      ? "border-gray-800"
-                      : ""
-                  }`}
-                >
-                  <h6 className="mr-2">{option.name}</h6>
-                  <h6 className="text-sm opacity-75">$ {option.extra}</h6>
-                </span>
+                  dishId={dish.id}
+                  isSelected={isOptionSelected(dish.id, option.name)}
+                  name={option.name}
+                  extra={option.extra}
+                  addOptionToItem={addOptionToItem}
+                  removeOptionFromItem={removeOptionFromItem}
+                />
               ))}
             </Dish>
           ))}
