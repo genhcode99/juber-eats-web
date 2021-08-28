@@ -7,6 +7,14 @@ interface ICoords {
   longitude: number
 }
 
+interface IDriverProps {
+  lat: number
+  lng: number
+  $hover?: any
+}
+
+const Driver: React.FC<IDriverProps> = () => <div className="text-lg">🚘</div>
+
 // <==========( Feature )==========>
 export const DashBoard = () => {
   // <State>
@@ -14,7 +22,7 @@ export const DashBoard = () => {
     latitude: 0,
     longitude: 0,
   })
-  const [map, setMap] = useState<any>()
+  const [map, setMap] = useState<google.maps.Map>()
   const [maps, setMaps] = useState<any>()
 
   // <위도,경도 가져오기>
@@ -32,14 +40,31 @@ export const DashBoard = () => {
     })
   }, [])
 
+  // <현재 좌표로 주소를 가져옴>
   useEffect(() => {
     if (map && maps) {
-      map.panTo(new maps.LatLng(driverCoords.latitude, driverCoords.longitude))
-    }
+      map.panTo(
+        new google.maps.LatLng(driverCoords.latitude, driverCoords.longitude),
+      )
+      /* const geocoder = new google.maps.Geocoder()
+      geocoder.geocode(
+        {
+          location: new google.maps.LatLng(
+            driverCoords.latitude,
+            driverCoords.longitude,
+          ),
+        },
+        (results, status) => {
+          console.log(status, results)
+        },
+      )
+    } */
   }, [driverCoords.longitude, driverCoords.latitude])
 
   const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
-    map.panTo(new maps.LatLng(driverCoords.latitude, driverCoords.longitude))
+    map.panTo(
+      new google.maps.LatLng(driverCoords.latitude, driverCoords.longitude),
+    )
     setMap(map)
     setMaps(maps)
   }
@@ -58,14 +83,7 @@ export const DashBoard = () => {
           onGoogleApiLoaded={onApiLoaded}
           bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP! }}
         >
-          <div
-            // @ts-ignore
-            lat={driverCoords.latitude}
-            lng={driverCoords.longitude}
-            className="text-lg"
-          >
-            🚘
-          </div>
+          <Driver lat={driverCoords.latitude} lng={driverCoords.longitude} />
         </GoogleMapReact>
       </div>
     </div>
