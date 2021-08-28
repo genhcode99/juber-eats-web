@@ -17,7 +17,10 @@ export const authTokenVar = makeVar(token)
 
 // Websocket Link를 만듦
 const wsLink = new WebSocketLink({
-  uri: "ws://localhost:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "wss://juber-eats-backend-clone.herokuapp.com/graphql"
+      : "ws://localhost:4000/graphql",
   options: {
     reconnect: true,
     connectionParams: {
@@ -28,7 +31,10 @@ const wsLink = new WebSocketLink({
 
 // Http Link 를 만듦
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://juber-eats-backend-clone.herokuapp.com/graphql"
+      : "http://localhost:4000/graphql",
 })
 
 // Http에 보내 줄 Header 설정
