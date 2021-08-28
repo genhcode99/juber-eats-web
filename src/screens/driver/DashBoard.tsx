@@ -57,16 +57,53 @@ export const DashBoard = () => {
         (results, status) => {
           console.log(status, results)
         },
-      )
-    } */
+      )*/
+    }
   }, [driverCoords.longitude, driverCoords.latitude])
 
+  // <현재위치로 이동, state 설정>
   const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     map.panTo(
       new google.maps.LatLng(driverCoords.latitude, driverCoords.longitude),
     )
     setMap(map)
     setMaps(maps)
+  }
+
+  // <onClick 기능 :경로찾기>
+  const onGetRouteClick = () => {
+    if (map) {
+      const directionsService = new google.maps.DirectionsService()
+      const directionsRenderer = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+          strokeColor: "#000",
+          strokeOpacity: 1,
+          strokeWeight: 5,
+        },
+      })
+      directionsRenderer.setMap(map)
+
+      directionsService.route(
+        {
+          origin: {
+            location: new google.maps.LatLng(
+              driverCoords.latitude,
+              driverCoords.longitude,
+            ),
+          },
+          destination: {
+            location: new google.maps.LatLng(
+              driverCoords.latitude + 0.05,
+              driverCoords.longitude + 0.05,
+            ),
+          },
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          directionsRenderer.setDirections(result)
+        },
+      )
+    }
   }
 
   // <==========( Presenter )==========>
@@ -83,9 +120,10 @@ export const DashBoard = () => {
           onGoogleApiLoaded={onApiLoaded}
           bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP! }}
         >
-          <Driver lat={driverCoords.latitude} lng={driverCoords.longitude} />
+          {/* <Driver lat={driverCoords.latitude} lng={driverCoords.longitude} /> */}
         </GoogleMapReact>
       </div>
+      <button onClick={onGetRouteClick}>Get route</button>
     </div>
   )
 }
