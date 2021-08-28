@@ -1,5 +1,19 @@
-import React, { useEffect, useState } from "react"
+import { gql, useSubscription } from "@apollo/client"
 import GoogleMapReact from "google-map-react"
+import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { FULL_ORDER_FRAGMENT } from "../../fragments"
+import { cookedOrders } from "../../graphql_type/cookedOrders"
+
+// <==========( Graphql )==========>
+const COOKED_ORDER_SUBSCRIPTION = gql`
+  subscription cookedOrders {
+    cookedOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
+`
 
 // <==========( Settings )==========>
 interface ICoords {
@@ -70,8 +84,8 @@ export const DashBoard = () => {
     setMaps(maps)
   }
 
-  // <onClick 기능 :경로찾기>
-  const onGetRouteClick = () => {
+  // <경로찾기>
+  const makeRoute = () => {
     if (map) {
       const directionsService = new google.maps.DirectionsService()
       const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -106,12 +120,22 @@ export const DashBoard = () => {
     }
   }
 
+  // <Subscription>
+  const { data: cookedOrdersData } = useSubscription<cookedOrders>(
+    COOKED_ORDER_SUBSCRIPTION,
+  )
+  useEffect(() => {
+    if (cookedOrdersData?.cookedOrders.id) {
+      makeRoute()
+    }
+  }, [cookedOrdersData])
+
   // <==========( Presenter )==========>
   return (
     <div>
       <div
         className="overflow-hidden"
-        style={{ width: window.innerWidth, height: "50vh" }}
+        style={{ width: window.innerWidth, height: "60vh" }}
       >
         <GoogleMapReact
           defaultZoom={16}
@@ -123,7 +147,28 @@ export const DashBoard = () => {
           {/* <Driver lat={driverCoords.latitude} lng={driverCoords.longitude} /> */}
         </GoogleMapReact>
       </div>
-      <button onClick={onGetRouteClick}>Get route</button>
+      <div className="max-w-screen-sm mx-auto bg-white relative -top-20 shadow-lg py-8 px-5">
+        {cookedOrdersData?.cookedOrders ? (
+          <>
+            <h1 className="text-center text-3xl font-medium">
+              New Cooked Order
+            </h1>
+            <h4 className="text-center text-2xl font-medium my-3">
+              Pick it up soon! @{cookedOrdersData.cookedOrders.restaurant?.name}
+            </h4>
+            <Link
+              to={`/orders/${cookedOrdersData.cookedOrders.id}`}
+              className="btn w-full block text-center mt-5"
+            >
+              Accept Challenge &rarr;
+            </Link>
+          </>
+        ) : (
+          <>
+            <h1 className="text-center text-3xl font-medium">No Orders Yet</h1>
+          </>
+        )}
+      </div>
     </div>
   )
 }
