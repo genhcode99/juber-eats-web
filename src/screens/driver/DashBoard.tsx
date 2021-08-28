@@ -1,9 +1,10 @@
-import { gql, useSubscription } from "@apollo/client"
+import { gql, useMutation, useSubscription } from "@apollo/client"
 import GoogleMapReact from "google-map-react"
 import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import { FULL_ORDER_FRAGMENT } from "../../fragments"
 import { cookedOrders } from "../../graphql_type/cookedOrders"
+import { takeOrder, takeOrderVariables } from "../../graphql_type/takeOrder"
 
 // <==========( Graphql )==========>
 const COOKED_ORDER_SUBSCRIPTION = gql`
@@ -13,6 +14,14 @@ const COOKED_ORDER_SUBSCRIPTION = gql`
     }
   }
   ${FULL_ORDER_FRAGMENT}
+`
+const Take_ORDER_MUTATION = gql`
+  mutation takeOrder($input: TakeOrderInput!) {
+    takeOrder(input: $input) {
+      ok
+      error
+    }
+  }
 `
 
 // <==========( Settings )==========>
@@ -130,6 +139,21 @@ export const DashBoard = () => {
     }
   }, [cookedOrdersData])
 
+  // <배달수락>
+  const history = useHistory()
+  const onCompleted = (data: takeOrder) => {
+    if (data.takeOrder.ok) {
+      history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`)
+    }
+  }
+  const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(
+    Take_ORDER_MUTATION,
+    { onCompleted },
+  )
+  const triggerMutation = (id: number) => {
+    takeOrderMutation({ variables: { input: { id } } })
+  }
+
   // <==========( Presenter )==========>
   return (
     <div>
@@ -156,12 +180,12 @@ export const DashBoard = () => {
             <h4 className="text-center text-2xl font-medium my-3">
               Pick it up soon! @{cookedOrdersData.cookedOrders.restaurant?.name}
             </h4>
-            <Link
-              to={`/orders/${cookedOrdersData.cookedOrders.id}`}
+            <button
+              onClick={() => triggerMutation(cookedOrdersData.cookedOrders.id)}
               className="btn w-full block text-center mt-5"
             >
               Accept Challenge &rarr;
-            </Link>
+            </button>
           </>
         ) : (
           <>
