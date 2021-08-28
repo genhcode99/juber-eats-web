@@ -1,7 +1,7 @@
 import { gql, useMutation, useSubscription } from "@apollo/client"
 import GoogleMapReact from "google-map-react"
 import React, { useEffect, useState } from "react"
-import { Link, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { FULL_ORDER_FRAGMENT } from "../../fragments"
 import { cookedOrders } from "../../graphql_type/cookedOrders"
 import { takeOrder, takeOrderVariables } from "../../graphql_type/takeOrder"
@@ -29,14 +29,6 @@ interface ICoords {
   latitude: number
   longitude: number
 }
-
-interface IDriverProps {
-  lat: number
-  lng: number
-  $hover?: any
-}
-
-const Driver: React.FC<IDriverProps> = () => <div className="text-lg">🚘</div>
 
 // <==========( Feature )==========>
 export const DashBoard = () => {
@@ -82,7 +74,7 @@ export const DashBoard = () => {
         },
       )*/
     }
-  }, [driverCoords.longitude, driverCoords.latitude])
+  }, [driverCoords.longitude, driverCoords.latitude, map, maps])
 
   // <현재위치로 이동, state 설정>
   const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {

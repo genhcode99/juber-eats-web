@@ -1,6 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client"
 import React, { useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
 import { useHistory, useLocation } from "react-router-dom"
 import { Restaurant } from "../../components/Restaurant"
 import { RESTAURANT_FRAGMENT } from "../../fragments"

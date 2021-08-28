@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery, useSubscription } from "@apollo/client"
+import { gql, useMutation, useQuery } from "@apollo/client"
 import React, { useEffect } from "react"
 import { Helmet } from "react-helmet-async"
 import { useParams } from "react-router-dom"
@@ -7,10 +7,7 @@ import { editOrder, editOrderVariables } from "../graphql_type/editOrder"
 import { getOrder, getOrderVariables } from "../graphql_type/getOrder"
 import { OderStatus, UserRole } from "../graphql_type/globalTypes"
 
-import {
-  orderUpdates,
-  orderUpdatesVariables,
-} from "../graphql_type/orderUpdates"
+import { orderUpdates } from "../graphql_type/orderUpdates"
 import { useMe } from "../hooks/useMe"
 
 // <==========( Graphql )==========>
@@ -93,7 +90,7 @@ export const Order = () => {
         },
       })
     }
-  }, [data])
+  }, [data, params.id, subscribeToMore])
 
   // <Subscription 사용하기 - 따로 사용할 경우>
   // const { data: subscriptionData } = useSubscription<

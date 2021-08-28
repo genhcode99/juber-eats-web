@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "npm run apollo:codegen && craco start",
-    "build": "craco build",
+    "build": "CI=false craco build",
     "test": "craco test --verbose",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "cypress": "npx cypress open",

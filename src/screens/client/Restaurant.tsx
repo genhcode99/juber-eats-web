@@ -5,10 +5,7 @@ import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments"
 import { restaurant, restaurantVariables } from "../../graphql_type/restaurant"
 import { Dish } from "../../components/Dish"
 import { Helmet } from "react-helmet-async"
-import {
-  CreateOrderInput,
-  CreateOrderItemInput,
-} from "../../graphql_type/globalTypes"
+import { CreateOrderItemInput } from "../../graphql_type/globalTypes"
 import { DishOption } from "../../components/DishOption"
 import {
   createOrder,
@@ -145,7 +142,7 @@ export const Restaurant = () => {
 
   const onCompleted = (data: createOrder) => {
     const {
-      createOrder: { ok, orderId },
+      createOrder: { orderId },
     } = data
     if (data.createOrder.ok) {
       history.push(`/orders/${orderId}`)
