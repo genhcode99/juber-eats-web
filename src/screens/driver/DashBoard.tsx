@@ -9,10 +9,13 @@ interface ICoords {
 
 // <==========( Feature )==========>
 export const DashBoard = () => {
+  // <State>
   const [driverCoords, setDriverCoords] = useState<ICoords>({
     latitude: 0,
     longitude: 0,
   })
+  const [map, setMap] = useState<any>()
+  const [maps, setMaps] = useState<any>()
 
   // <위도,경도 가져오기>
   const onSucces = ({
@@ -29,10 +32,16 @@ export const DashBoard = () => {
     })
   }, [])
 
-  const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
-    setTimeout(() => {
+  useEffect(() => {
+    if (map && maps) {
       map.panTo(new maps.LatLng(driverCoords.latitude, driverCoords.longitude))
-    }, 5000)
+    }
+  }, [driverCoords.longitude, driverCoords.latitude])
+
+  const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
+    map.panTo(new maps.LatLng(driverCoords.latitude, driverCoords.longitude))
+    setMap(map)
+    setMaps(maps)
   }
 
   // <==========( Presenter )==========>
@@ -40,15 +49,24 @@ export const DashBoard = () => {
     <div>
       <div
         className="overflow-hidden"
-        style={{ width: window.innerWidth, height: "95vh" }}
+        style={{ width: window.innerWidth, height: "50vh" }}
       >
         <GoogleMapReact
-          defaultZoom={15}
+          defaultZoom={16}
           defaultCenter={{ lat: 36.31, lng: 126.88 }}
           yesIWantToUseGoogleMapApiInternals
           onGoogleApiLoaded={onApiLoaded}
           bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP! }}
-        ></GoogleMapReact>
+        >
+          <div
+            // @ts-ignore
+            lat={driverCoords.latitude}
+            lng={driverCoords.longitude}
+            className="text-lg"
+          >
+            🚘
+          </div>
+        </GoogleMapReact>
       </div>
     </div>
   )
